@@ -1,4 +1,4 @@
-module github.com/nickvanlandschoot/agentscope.git
+module github.com/nickvanlandschoot/agentscope
 
 go 1.24.1
 
