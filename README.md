@@ -1,12 +1,12 @@
 # AgentScope
 
-A minimal context management tool for software engineers who want to maintain control over instruction files when using LLMs to work with large codebases.
+A minimal context management tool for parallel AI sessions, letting software engineers maintain control over instruction files when using LLMs to work with large codebases.
 
 ![AgentScope Demo](screenshots/demo.png)
 
 ## What This Does
 
-AgentScope lets you define context for AI coding agents in markdown files and dynamically update your `CLAUDE.md` file as needed. Rather than using traditional skills, you activate only the instructions relevant to your current task.
+Run multiple Claude sessions in parallel with different contexts. Define your instructions once, activate only what you need for each session, and keep everything under your control.
 
 ### Why Dynamic Activation Instead of Skills?
 
@@ -54,8 +54,18 @@ Creates a `.agentscope` directory with a `root.md` file. Add `.agentscope` to yo
 **`agentscope new <name>`**
 Creates a new instruction file in `.agentscope/<name>.md` with default frontmatter.
 
-**`agentscope activate`**
-Opens an interactive prompt to select which instructions to activate. Selected instructions are compiled into `CLAUDE.md`.
+**`agentscope activate [claude-args...]`**
+Select context through an interactive prompt, create a new symlink to your project, and launch Claude with the compiled instructions. Selected instructions are compiled into `CLAUDE.md` in the symlink directory.
+
+All arguments after `activate` are passed directly to the claude CLI. For example:
+
+```bash
+# Select Context, Create and open a new Symlink, and launch claude with the updated context
+agentscope activate --dangerously-skip-permissions
+
+# Pass any valid claude flag
+agentscope activate --dangerously-accept-permissions
+```
 
 ### Editing Instruction Files
 
@@ -90,9 +100,18 @@ Write any markdown content. Use heading level 2 (##) for sections except for in 
 1. Instruction files live in `.agentscope/` with YAML frontmatter
 2. `agentscope activate` reads all files, sorts by position, and presents a multi-select prompt
 3. Selected instructions are extracted (content after the second `---`) and combined into `CLAUDE.md`
-4. Your AI assistant reads `CLAUDE.md` for context on each request
+4. A temporary portal directory is created with a symlink to your project
+5. Claude opens in the symlink directory with your selected instructions in `CLAUDE.md`
+6. Your AI assistant reads `CLAUDE.md` for context on each request
+7. When Claude exits, the portal directory is cleaned up
 
 This keeps your context focused and under your control.
+
+## Symlinks
+
+When you run `agentscope activate`, it creates a temporary portal directory at `~/.agentscope/<project-name>/<session-id>/` with a symlink pointing to your project root. Claude opens in this symlink directory with your compiled `CLAUDE.md` file, providing an isolated session that is cleaned up automatically when Claude exits.
+
+If you're working in an environment where symlinks aren't supported (like some Windows configurations), you may need to enable developer mode or run with appropriate permissions.
 
 ## License
 
