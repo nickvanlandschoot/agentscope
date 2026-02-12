@@ -195,7 +195,17 @@ var activateCmd = &cobra.Command{
 	Short: "Activate an agent session with Claude",
 	Long: `Creates an isolated portal directory for running Claude with project-specific context.
 All arguments after 'activate' are passed directly to the claude CLI.`,
+	Args:                  cobra.ArbitraryArgs,
+	DisableFlagParsing:    true,
 	Run: func(cmd *cobra.Command, args []string) {
+		// Handle help flag manually
+		for _, arg := range args {
+			if arg == "-h" || arg == "--help" {
+				cmd.Help()
+				return
+			}
+		}
+
 		projectRoot, err := os.Getwd()
 		if err != nil {
 			log.Fatalf("Failed to get current directory: %v", err)

@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-02-11
+
+### Fixed
+
+- Fixed `activate` command argument parsing to properly accept arbitrary Claude CLI flags like `--dangerously-skip-permissions`
+
 ## [0.2.0] - 2026-02-10
 
 ### Added
